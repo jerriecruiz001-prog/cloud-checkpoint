@@ -9,19 +9,18 @@ export default function Home() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    async function fetchJobs() {
+      setLoading(true);
+      const params = new URLSearchParams();
+      if (search) params.set("search", search);
+      if (type) params.set("type", type);
+      const res = await fetch(`/api/jobs?${params}`);
+      const data = await res.json();
+      setJobs(data);
+      setLoading(false);
+    }
     fetchJobs();
   }, [search, type]);
-
-  async function fetchJobs() {
-    setLoading(true);
-    const params = new URLSearchParams();
-    if (search) params.set("search", search);
-    if (type) params.set("type", type);
-    const res = await fetch(`/api/jobs?${params}`);
-    const data = await res.json();
-    setJobs(data);
-    setLoading(false);
-  }
 
   function formatSalary(salary) {
     if (!salary?.min && !salary?.max) return null;
